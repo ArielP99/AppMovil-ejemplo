@@ -7,7 +7,7 @@ import {MemoryVectorStore} from "langchain/vectorstores/memory";
 
 export const process_doc = async (filename: string | undefined, question: string) => {
     const model = new OpenAI({});
-    const loader = new PDFLoader(`/Users/pablocaiza/Documents/mobil-2/backend/uploads/${filename}`, {
+    const loader = new PDFLoader(`/Users/Ariel/Desktop/App-movil-ejemplo/backend/uploads/${filename}`, {
         splitPages: false
     })
     const doc = await loader.load()
