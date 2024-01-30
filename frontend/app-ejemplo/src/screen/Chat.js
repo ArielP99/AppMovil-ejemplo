@@ -1,12 +1,12 @@
 import React, {useState} from "react";
 import {TextInput, View, StyleSheet, Text, Button} from "react-native";
-
+import axios from "axios";
 
 const Chat = () => {
     const [prompt, setPrompt] = useState('')
     const [result, setResult] = useState('')
 
-    const getResultFromOpenApi = async () => {
+   /*  const getResultFromOpenApi = async () => {
         try {
             const response = await fetch('http://localhost:9004/openapi', {
                 method: 'POST',
@@ -20,8 +20,26 @@ const Chat = () => {
         } catch (error) {
             console.log(error)
         }
-    }
+    } */
 
+    const getResultFromOpenApi = async () => {
+        try {
+          //Implementacion de axios en lugar de fetch para realizar la solicitud POST
+          //El objteo de encabezados pasa directamente como una propiedad en el segundo argumento 'prompt'
+          const response = await axios.post('http://localhost:9004/openapi', {
+            prompt,
+          }, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          //La respuesta se accede a traves de response.data en lugar de response.jason() que se usa en fetch
+          const jsonData = response.data;
+          setResult(`${jsonData.result} y los token utilizados fueron ${jsonData.token}`);
+        } catch (error) {
+          console.log(error);
+        }
+      };
 
     return (
         <View style={styles.container}>

@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {Text, View, StyleSheet, Button, TextInput} from "react-native";
 import * as ExpoDocumentPicker from "expo-document-picker";
+import axios from "axios";
 
 const Pdf = () => {
     const [pdfDoc, setPdfDoc] = useState()
@@ -10,7 +11,7 @@ const Pdf = () => {
         let result = await ExpoDocumentPicker.getDocumentAsync({copyToCacheDirectory: true});
         setPdfDoc(result.file)
     }
-    const handleUpload = async () => {
+ /*    const handleUpload = async () => {
         try {
             const data = new FormData()
             data.append('question', question)
@@ -25,13 +26,30 @@ const Pdf = () => {
                 const responseJSON = await response.json()
                 setResult(responseJSON.text)
             }
-
-
         } catch (error) {
             console.log(error)
         }
+    } */
 
-    }
+    const handleUpload = async () => {
+        try {
+          const data = new FormData();
+          data.append("question", question);
+          data.append("file", pdfDoc);
+    
+          console.log(data.get("file"));
+          //Implementacion de axios en lugar de fetch para realizar la solicitud POST
+          const response = await axios.post("http://localhost:9004/upload", data);
+          //Se verifica el estado de la respuesta mediante response.status=200 en lugar de response.ok
+          //ya que axios usa el estado http para determinar si la solicitud fue exitosa
+          if (response.status === 200) {
+            setQuestion("");
+            setResult(response.data.text);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
 
     return (
         <View>

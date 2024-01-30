@@ -33,7 +33,7 @@ import {OpenAIApi, Configuration} from 'openai'
 import * as path from "path";
 
 const configuration = new Configuration({
-    apiKey: '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'
+    apiKey: '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'
 })
 const openai = new OpenAIApi(configuration)
 
@@ -45,8 +45,8 @@ const generatePrompt = (numberToConvert: number) => {
 let names = [
     {
         id: uuidv4(),
-        firstName: 'Pablo',
-        lastName: 'Caiza'
+        firstName: 'Ariel',
+        lastName: 'Panchi'
     },
     {
         id: uuidv4(),

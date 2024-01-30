@@ -38,78 +38,63 @@ const User = () => {
 
     const fetchData = async () => {
         try {
-            const response = await fetch('http://localhost:3000/nombres')
-            const jsonData = await response.json()
-            setUsers(jsonData)
-        } catch (e) {
-            console.error('error', e)
-        }
-
-    }
-
-    const deleteUser = async (item) => {
-        try {
-            const response = await fetch(`http://localhost:3000/nombres/${item.id}`, {
-                method: 'DELETE'
-            })
-            if (response.status === 204) {
-                setUsers(users.filter(i => i.id !== item.id))
-            }
-        } catch (e) {
-            console.error('error', e)
-        }
-
-    }
-
-    const editUser = async () => {
-        try {
-            const response = await fetch(`http://localhost:3000/nombres/${selectedUser.id}`, {
-                method: 'PUT',
-                headers: {
-                    "Content-Type": 'application/json'
-                },
-                body: JSON.stringify({
-                    firstName: selectedUser.firstName,
-                    lastName: selectedUser.lastName
-                })
-            })
-            if (response.status === 204) {
-                const index = users.findIndex(i => i.id === selectedUser.id)
-                users[index] = {
-                    id: selectedUser.id,
-                    firstName: selectedUser.firstName,
-                    lastName: selectedUser.lastName
-                }
-                setUsers(users)
-                setShowEdit(false)
-            }
-        } catch (e) {
-
-            console.error('error', e)
-        }
-
-    }
-    const createUser = async () => {
-        try {
-            const response = await fetch('http://localhost:3000/nombres', {
-                method: 'POST',
-                headers: {
-                    "Content-Type": 'application/json'
-                },
-                body: JSON.stringify({firstName, lastName})
-            })
-            if (response.ok) {
-                setFirstName('')
-                setLastName('')
-                const responseJSON = await response.json()
-                setUsers([...users, responseJSON])
-            }
-
-
+          const response = await axios.get("http://localhost:3000/nombres");
+          setUsers(response.data)
         } catch (error) {
-            console.log(error)
+          console.error("error", error)
         }
-    }
+      }
+
+      const deleteUser = async (item) => {
+        try {
+          await axios.delete(`http://localhost:3000/nombres/${item.id}`);
+          setUsers(users.filter((i) => i.id !== item.id));
+        } catch (error) {
+          console.error("error", error)
+        }
+      }
+
+      const editUser = async () => {
+        try {
+          await axios.put(`http://localhost:3000/nombres/${selectedUser.id}`, {
+            firstName: selectedUser.firstName,
+            lastName: selectedUser.lastName,
+          })
+    
+          const updatedUsers = users.map((user) => {
+            if (user.id === selectedUser.id) {
+              return {
+                id: selectedUser.id,
+                firstName: selectedUser.firstName,
+                lastName: selectedUser.lastName,
+              }
+            }
+            return user
+          })
+    
+          setUsers(updatedUsers)
+          setShowEdit(false)
+        } catch (error) {
+          console.error("error", error)
+        }
+      }
+
+      const createUser = async () => {
+        try {
+          const response = await axios.post("http://localhost:3000/nombres", {
+            firstName,
+            lastName,
+          });
+    
+          if (response.status === 201) {
+            setFirstName("");
+            setLastName("");
+            setUsers([...users, response.data]);
+          }
+        } catch (error) {
+          console.error("error", error);
+        }
+      }
 
     return (
         <View style={styles.container}>
